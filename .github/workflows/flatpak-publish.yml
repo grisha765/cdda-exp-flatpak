@@ -46,13 +46,18 @@ jobs:
             --gpg-import=pubkey.gpg \
             --generate-static-deltas \
             ./repo
-          touch ./repo/.nojekyll
+
+      - name: Set the root of the repository
+        run: |
+          mkdir ./root
+          mv ./repo ./root
+          touch ./root/.nojekyll
 
       - name: Write .flatpakrepo file
         env:
           PAGES_REPO_URL: ${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
         run: |
-          cat > ./repo/${{ github.repository_owner }}.flatpakrepo << EOF 
+          cat > ./root/${{ github.repository_owner }}.flatpakrepo << EOF 
           [Flatpak Repo]
           Title=$PAGES_REPO_URL
           Url=https://$PAGES_REPO_URL/repo/
@@ -63,5 +68,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./repo
+          publish_dir: ./root
           force_orphan: true
