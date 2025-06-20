@@ -8,6 +8,9 @@ on:
       - 'readme.md'
   workflow_dispatch:
 
+env:
+  MANIFEST: org.cataclysmdda.CataclysmDDA.experimental.yml
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -31,10 +34,17 @@ jobs:
         run: |
           gpg --export ${{ steps.gpg-key.outputs.fingerprint }} > pubkey.gpg
 
+      - name: Prepare manifest
+        env:
+          FILE_NAME: ${{ env.MANIFEST }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          bash ./.github/set_commit.sh
+
       - name: Build Flatpak
         uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
-          manifest-path: org.cataclysmdda.CataclysmDDA.experimental.yml
+          manifest-path: ${{ env.MANIFEST }}
           gpg-sign: ${{ steps.gpg-key.outputs.fingerprint }}
           build-bundle: false
           upload-artifact: false
