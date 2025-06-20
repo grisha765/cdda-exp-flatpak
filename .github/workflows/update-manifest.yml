@@ -1,0 +1,57 @@
+name: Update manifest & commit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 7 * * *' # Daily 10h MSK
+
+env:
+  MANIFEST: org.cataclysmdda.CataclysmDDA.experimental.yml
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        run: git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git -b ${{ github.ref_name }}
+
+      - name: Prepare manifest
+        id: prepare
+        env:
+          FILE_NAME: ${{ env.MANIFEST }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          source ./.github/set_commit.sh
+          echo "tag_name=$TAG_NAME" >> "$GITHUB_OUTPUT"
+          echo "changed=$CHANGED" >> "$GITHUB_OUTPUT"
+          echo "commit_sha=$COMMIT_SHA" >> "$GITHUB_OUTPUT"
+        working-directory: ${{ github.event.repository.name }}
+
+      - name: Setup git user
+        if: steps.prepare.outputs.changed == 'true'
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+        working-directory: ${{ github.event.repository.name }}
+
+      - name: Make changes to the repository
+        if: steps.prepare.outputs.changed == 'true'
+        run: |
+          git add ${{ env.MANIFEST }}
+          git commit -m "[u] ${{ steps.prepare.outputs.tag_name }}" -m "Update from CleverRaven/Cataclysm-DDA@${{ steps.prepare.outputs.commit_sha }}"
+        working-directory: ${{ github.event.repository.name }}
+
+      - name: Push changes
+        if: steps.prepare.outputs.changed == 'true'
+        run: |
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
+        working-directory: ${{ github.event.repository.name }}
+
+      - name: Trigger flatpak-publish
+        if: steps.prepare.outputs.changed == 'true'
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          event-type: flatpak-publish
