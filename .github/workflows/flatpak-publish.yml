@@ -15,12 +15,18 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [ x86_64, aarch64 ]
+    runs-on: ${{ matrix.arch == 'aarch64' && 'ubuntu-22.04-arm' || 'ubuntu-latest' }}
     container:
       image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-24.08
       options: --privileged
     permissions:
       contents: write
+    outputs:
+      gpg_fpr: ${{ steps.gpg-key.outputs.fingerprint }}
 
     steps:
       - name: Checkout code
@@ -32,10 +38,6 @@ jobs:
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
 
-      - name: Prepare GPG-pubkey
-        run: |
-          gpg --export ${{ steps.gpg-key.outputs.fingerprint }} > pubkey.gpg
-
       - name: Build Flatpak
         uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
@@ -43,31 +45,44 @@ jobs:
           gpg-sign: ${{ steps.gpg-key.outputs.fingerprint }}
           build-bundle: false
           upload-artifact: false
+          arch: ${{ matrix.arch }}
 
-      - name: Prepare docker for QEMU
-        run: |
-          curl https://download.docker.com/linux/static/stable/x86_64/docker-26.0.0.tgz --output ./docker.tgz
-          tar xzvf docker.tgz
-          mv docker/* /usr/bin
-
-      - name: Set up QEMU arm64
-        uses: docker/setup-qemu-action@v3
+      - name: Upload repo ${{ matrix.arch }}
+        uses: actions/upload-artifact@v4
         with:
-          platforms: arm64
+          name: repo-${{ matrix.arch }}
+          path: repo
 
-      - name: Build Flatpak arm64
-        uses: flatpak/flatpak-github-actions/flatpak-builder@v6
-        with:
-          manifest-path: ${{ env.MANIFEST }}
-          gpg-sign: ${{ steps.gpg-key.outputs.fingerprint }}
-          build-bundle: false
-          upload-artifact: false
-          arch: aarch64
 
-      - name: Regenerate summary & deltas
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-24.08
+      options: --privileged
+    permissions:
+      contents: write
+
+    steps:
+      - name: Prepare GPG-pubkey
         run: |
+          gpg --export ${{ needs.build.outputs.gpg_fpr }} > pubkey.gpg
+
+      - name: Download all repos
+        uses: actions/download-artifact@v4
+        with:
+          pattern: repo-*
+          path: repos
+
+      - name: Merge repos into one
+        run: |
+          mkdir repo
+          ostree --repo=./repo init --mode=archive-z2
+          for ref in ./repos/repo-*; do
+            ostree pull-local $ref --repo=./repo
+          done
           flatpak build-update-repo \
-            --gpg-sign=${{ steps.gpg-key.outputs.fingerprint }} \
+            --gpg-sign=${{ needs.build.outputs.gpg_fpr }} \
             --gpg-import=pubkey.gpg \
             --generate-static-deltas \
             ./repo
