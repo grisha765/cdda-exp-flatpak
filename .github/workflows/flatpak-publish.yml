@@ -82,8 +82,10 @@ jobs:
         run: |
           mkdir repo
           ostree --repo=./repo init --mode=archive-z2
-          for ref in ./repos/repo-*/repo; do
-            ostree pull-local $ref --repo=./repo
+          for src in ./repos/repo-*; do
+            ls $src
+            ref=$(ostree refs --repo=$src)
+            ostree pull-local $src $ref --repo=./repo
           done
           flatpak build-update-repo \
             --gpg-sign=${{ steps.gpg-key.outputs.fingerprint }} \
