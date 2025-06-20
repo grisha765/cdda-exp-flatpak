@@ -22,8 +22,9 @@ modules:
       - make -j $FLATPAK_BUILDER_N_JOBS $MAKE_ARGS
       - make $MAKE_ARGS localization
       - make $MAKE_ARGS install
-      - install -Dm644 data/xdg/org.cataclysmdda.CataclysmDDA.svg /app/share/icons/hicolor/scalable/apps/org.cataclysmdda.CataclysmDDA.svg
+      - install -Dm644 data/xdg/org.cataclysmdda.CataclysmDDA.svg /app/share/icons/hicolor/scalable/apps/org.cataclysmdda.CataclysmDDA.experimental.svg
       - sed -i '/^Name=/ s/$/ (Experimental)/' data/xdg/org.cataclysmdda.CataclysmDDA.desktop
+      - sed -i 's/org\.cataclysmdda\.CataclysmDDA/&.experimental/g' data/xdg/org.cataclysmdda.CataclysmDDA.desktop
       - install -Dm755 data/xdg/org.cataclysmdda.CataclysmDDA.desktop /app/share/applications/org.cataclysmdda.CataclysmDDA.experimental.desktop
       - sed -i 's/org\.cataclysmdda\.CataclysmDDA/&.experimental/g' org.cataclysmdda.CataclysmDDA.appdata.xml
       - install -Dm644 org.cataclysmdda.CataclysmDDA.appdata.xml /app/share/metainfo/org.cataclysmdda.CataclysmDDA.experimental.appdata.xml
