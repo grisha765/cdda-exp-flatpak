@@ -25,8 +25,6 @@ jobs:
       options: --privileged
     permissions:
       contents: write
-    outputs:
-      gpg_fpr: ${{ steps.gpg-key.outputs.fingerprint }}
 
     steps:
       - name: Checkout code
@@ -64,9 +62,15 @@ jobs:
       contents: write
 
     steps:
+      - name: Import GPG-key
+        id: gpg-key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+
       - name: Prepare GPG-pubkey
         run: |
-          gpg --export ${{ needs.build.outputs.gpg_fpr }} > pubkey.gpg
+          gpg --export ${{ steps.gpg-key.outputs.fingerprint }} > pubkey.gpg
 
       - name: Download all repos
         uses: actions/download-artifact@v4
@@ -79,10 +83,10 @@ jobs:
           mkdir repo
           ostree --repo=./repo init --mode=archive-z2
           for ref in ./repos/repo-*; do
-            ostree pull-local $ref --repo=./repo
+            ostree --repo=./repo pull-local $ref
           done
           flatpak build-update-repo \
-            --gpg-sign=${{ needs.build.outputs.gpg_fpr }} \
+            --gpg-sign=${{ steps.gpg-key.outputs.fingerprint }} \
             --gpg-import=pubkey.gpg \
             --generate-static-deltas \
             ./repo
