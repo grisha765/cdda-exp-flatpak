@@ -1,0 +1,67 @@
+name: Build and Push Flatpak manifest
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'readme.md'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-24.08
+      options: --privileged
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Import GPG-key
+        id: gpg-key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+
+      - name: Prepare GPG-pubkey
+        run: |
+          gpg --export ${{ steps.gpg-key.outputs.fingerprint }} > pubkey.gpg
+
+      - name: Build Flatpak
+        uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          manifest-path: org.cataclysmdda.CataclysmDDA.yml
+          gpg-sign: ${{ steps.gpg-key.outputs.fingerprint }}
+          build-bundle: false
+          upload-artifact: false
+
+      - name: Regenerate summary & deltas
+        run: |
+          flatpak build-update-repo \
+            --gpg-sign=${{ steps.gpg-key.outputs.fingerprint }} \
+            --gpg-import=pubkey.gpg \
+            --generate-static-deltas \
+            ./repo
+          touch ./repo/.nojekyll
+
+      - name: Write .flatpakrepo file
+        env:
+          PAGES_REPO_URL: ${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+        run: |
+          cat > ./repo/${{ github.repository_owner }}.flatpakrepo << EOF 
+          [Flatpak Repo]
+          Title=$PAGES_REPO_URL
+          Url=https://$PAGES_REPO_URL/repo/
+          GPGKey=$(cat pubkey.gpg | base64 --wrap=0)
+          EOF
+
+      - name: Publish to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./repo
+          force_orphan: true
