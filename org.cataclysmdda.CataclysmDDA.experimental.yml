@@ -1,4 +1,5 @@
-id: "org.cataclysmdda.CataclysmDDA"
+# inherited from: https://github.com/flathub/org.cataclysmdda.CataclysmDDA/blob/master/org.cataclysmdda.CataclysmDDA.yml
+id: "org.cataclysmdda.CataclysmDDA.experimental"
 runtime: "org.freedesktop.Platform"
 runtime-version: '24.08'
 sdk: org.freedesktop.Sdk//23.08
@@ -22,8 +23,10 @@ modules:
       - make $MAKE_ARGS localization
       - make $MAKE_ARGS install
       - install -Dm644 data/xdg/org.cataclysmdda.CataclysmDDA.svg /app/share/icons/hicolor/scalable/apps/org.cataclysmdda.CataclysmDDA.svg
-      - install -Dm755 data/xdg/org.cataclysmdda.CataclysmDDA.desktop /app/share/applications/org.cataclysmdda.CataclysmDDA.desktop
-      - install -Dm644 org.cataclysmdda.CataclysmDDA.appdata.xml /app/share/metainfo/org.cataclysmdda.CataclysmDDA.appdata.xml
+      - sed -i '/^Name=/ s/$/ (Experimental)/' data/xdg/org.cataclysmdda.CataclysmDDA.desktop
+      - install -Dm755 data/xdg/org.cataclysmdda.CataclysmDDA.desktop /app/share/applications/org.cataclysmdda.CataclysmDDA.experimental.desktop
+      - sed -i 's/org\.cataclysmdda\.CataclysmDDA/&.experimental/g' org.cataclysmdda.CataclysmDDA.appdata.xml
+      - install -Dm644 org.cataclysmdda.CataclysmDDA.appdata.xml /app/share/metainfo/org.cataclysmdda.CataclysmDDA.experimental.appdata.xml
     sources:
       - type: git
         url: https://github.com/CleverRaven/Cataclysm-DDA.git

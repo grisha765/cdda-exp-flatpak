@@ -34,7 +34,7 @@ jobs:
       - name: Build Flatpak
         uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
-          manifest-path: org.cataclysmdda.CataclysmDDA.yml
+          manifest-path: org.cataclysmdda.CataclysmDDA.experimental.yml
           gpg-sign: ${{ steps.gpg-key.outputs.fingerprint }}
           build-bundle: false
           upload-artifact: false
