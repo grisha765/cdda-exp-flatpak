@@ -44,6 +44,12 @@ jobs:
           build-bundle: false
           upload-artifact: false
 
+      - name: Prepare docker for QEMU
+        run: |
+          curl https://download.docker.com/linux/static/stable/x86_64/docker-26.0.0.tgz --output ./docker.tgz
+          tar xzvf docker.tgz
+          mv docker/* /usr/bin
+
       - name: Set up QEMU arm64
         uses: docker/setup-qemu-action@v3
         with:
