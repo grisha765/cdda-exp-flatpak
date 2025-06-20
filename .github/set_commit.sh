@@ -21,12 +21,14 @@ fi
 if [[ "$commit_sha" == "$current_commit" ]]; then
   echo "Commit is already up to date: $commit_sha"
   rm $script_dir/releases.json
-  exit 1
+  export CHANGED=false
 else
   echo "Updating commit from $current_commit to $commit_sha"
   sed -i "s/commit: \"$current_commit\"/commit: \"$commit_sha\"/" "$file_path"
   echo "Updated commit in file: $(grep -oP 'commit: "\K[^\"]+' "$file_path")"
   echo "Release tag name: $tag_name"
   export TAG_NAME="$tag_name"
+  export COMMIT_SHA="$commit_sha"
   rm $script_dir/releases.json
+  export CHANGED=true
 fi
