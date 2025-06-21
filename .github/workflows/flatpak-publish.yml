@@ -83,7 +83,6 @@ jobs:
           mkdir repo
           ostree --repo=./repo init --mode=archive-z2
           for src in ./repos/repo-*; do
-            ls $src
             ref=$(ostree refs --repo=$src)
             ostree pull-local $src $ref --repo=./repo
           done
