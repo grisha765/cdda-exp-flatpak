@@ -12,3 +12,12 @@ My flatpak repository for experimental builds of Cataclysm: Dark Days Ahead.
     ```bash
     flatpak install --user cdda-exp org.cataclysmdda.CataclysmDDA.experimental
     ```
+
+- To prevent the package from updating automatically, fix this:
+    ```bash
+    flatpak mask --user org.cataclysmdda.CataclysmDDA.experimental
+    ```
+    - You can update a fixed package as follows:
+        ```bash
+        flatpak update --user org.cataclysmdda.CataclysmDDA.experimental
+        ```
