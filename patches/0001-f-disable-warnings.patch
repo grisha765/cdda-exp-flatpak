@@ -1,0 +1,25 @@
+From 181d2e5c8deac0b1e47003bd3482ae75c5208ede Mon Sep 17 00:00:00 2001
+From: Grisha <grisha765@tuta.io>
+Date: Sun, 22 Jun 2025 02:41:39 +0300
+Subject: [PATCH] [f] disable warnings
+
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 54e3b93..fa35f98 100644
+--- a/Makefile
++++ b/Makefile
+@@ -122,7 +122,7 @@ ifeq ($(NATIVE), emscripten)
+   WARNINGS += -Wno-gnu-zero-variadic-macro-arguments
+ endif
+ # Uncomment below to disable warnings
+-#WARNINGS = -w
++WARNINGS = -w
+ DEBUGSYMS = -g
+ #PROFILE = -pg
+ #OTHERS = -O3
+-- 
+2.49.0
+

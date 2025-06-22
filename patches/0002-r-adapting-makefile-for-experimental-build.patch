@@ -1,0 +1,42 @@
+From efc32eeb12138063d38771d9630456d3dc570071 Mon Sep 17 00:00:00 2001
+From: Grisha <grisha765@tuta.io>
+Date: Sun, 22 Jun 2025 03:40:45 +0300
+Subject: [PATCH 2/2] [r] adapting makefile for experimental build
+
+---
+ Makefile | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 54e3b93..f608765 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1207,9 +1207,9 @@ install: version $(TARGET)
+ 	cp -R --no-preserve=ownership data/title $(DATA_PREFIX)
+ ifeq ($(TILES), 1)
+ 	cp -R --no-preserve=ownership gfx $(DATA_PREFIX)
+-	install -Dm755 -t $(SHARE_DIR)/applications/ data/xdg/org.cataclysmdda.CataclysmDDA.desktop
+-	install -Dm644 -t $(SHARE_DIR)/metainfo/ data/xdg/org.cataclysmdda.CataclysmDDA.appdata.xml
+-	install -Dm644 -t $(SHARE_DIR)/icons/hicolor/scalable/apps/ data/xdg/org.cataclysmdda.CataclysmDDA.svg
++	install -Dm755 -t $(SHARE_DIR)/applications/ data/xdg/org.cataclysmdda.CataclysmDDA.experimental.desktop
++	install -Dm644 -t $(SHARE_DIR)/metainfo/ data/xdg/org.cataclysmdda.CataclysmDDA.experimental.appdata.xml
++	install -Dm644 -t $(SHARE_DIR)/icons/hicolor/scalable/apps/ data/xdg/org.cataclysmdda.CataclysmDDA.experimental.svg
+ endif
+ ifeq ($(SOUND), 1)
+ 	cp -R --no-preserve=ownership data/sound $(DATA_PREFIX)
+@@ -1241,9 +1241,9 @@ install: version $(TARGET)
+ 	cp -R --no-preserve=ownership data/title $(DATA_PREFIX)
+ ifeq ($(TILES), 1)
+ 	cp -R --no-preserve=ownership gfx $(DATA_PREFIX)
+-	install -Dm755 -t $(SHARE_DIR)/applications/ data/xdg/org.cataclysmdda.CataclysmDDA.desktop
+-	install -Dm644 -t $(SHARE_DIR)/metainfo/ data/xdg/org.cataclysmdda.CataclysmDDA.appdata.xml
+-	install -Dm644 -t $(SHARE_DIR)/icons/hicolor/scalable/apps/ data/xdg/org.cataclysmdda.CataclysmDDA.svg
++	install -Dm755 -t $(SHARE_DIR)/applications/ data/xdg/org.cataclysmdda.CataclysmDDA.experimental.desktop
++	install -Dm644 -t $(SHARE_DIR)/metainfo/ data/xdg/org.cataclysmdda.CataclysmDDA.experimental.appdata.xml
++	install -Dm644 -t $(SHARE_DIR)/icons/hicolor/scalable/apps/ data/xdg/org.cataclysmdda.CataclysmDDA.experimental.svg
+ endif
+ ifeq ($(SOUND), 1)
+ 	cp -R --no-preserve=ownership data/sound $(DATA_PREFIX)
+-- 
+2.49.0
+

@@ -1,0 +1,63 @@
+From 1cb9259ec661a13d0e77e42b10a6ba9e668f4496 Mon Sep 17 00:00:00 2001
+From: Grisha <grisha765@tuta.io>
+Date: Sun, 22 Jun 2025 03:33:10 +0300
+Subject: [PATCH 1/2] [r] adapting xdg for experimental builds
+
+---
+ ...=> org.cataclysmdda.CataclysmDDA.experimental.appdata.xml} | 4 ++--
+ ...top => org.cataclysmdda.CataclysmDDA.experimental.desktop} | 4 ++--
+ ...DDA.svg => org.cataclysmdda.CataclysmDDA.experimental.svg} | 0
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+ rename data/xdg/{org.cataclysmdda.CataclysmDDA.appdata.xml => org.cataclysmdda.CataclysmDDA.experimental.appdata.xml} (99%)
+ rename data/xdg/{org.cataclysmdda.CataclysmDDA.desktop => org.cataclysmdda.CataclysmDDA.experimental.desktop} (72%)
+ rename data/xdg/{org.cataclysmdda.CataclysmDDA.svg => org.cataclysmdda.CataclysmDDA.experimental.svg} (100%)
+
+diff --git a/data/xdg/org.cataclysmdda.CataclysmDDA.appdata.xml b/data/xdg/org.cataclysmdda.CataclysmDDA.experimental.appdata.xml
+similarity index 99%
+rename from data/xdg/org.cataclysmdda.CataclysmDDA.appdata.xml
+rename to data/xdg/org.cataclysmdda.CataclysmDDA.experimental.appdata.xml
+index 7fb0e3a..488c4c9 100644
+--- a/data/xdg/org.cataclysmdda.CataclysmDDA.appdata.xml
++++ b/data/xdg/org.cataclysmdda.CataclysmDDA.experimental.appdata.xml
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <component type="desktop">
+-  <id>org.cataclysmdda.CataclysmDDA</id>
++  <id>org.cataclysmdda.CataclysmDDA.experimental</id>
+   <metadata_license>CC-BY-SA-3.0</metadata_license>
+   <project_license>CC-BY-SA-3.0</project_license>
+   <name>Cataclysm: Dark Days Ahead</name>
+@@ -66,7 +66,7 @@
+   <url type="contribute">
+     https://cataclysmdda.org/contributions/
+   </url>
+-  <launchable type="desktop-id">org.cataclysmdda.CataclysmDDA.desktop</launchable>
++  <launchable type="desktop-id">org.cataclysmdda.CataclysmDDA.experimental.desktop</launchable>
+   <provides>
+     <binary>cataclysm-tiles</binary>
+   </provides>
+diff --git a/data/xdg/org.cataclysmdda.CataclysmDDA.desktop b/data/xdg/org.cataclysmdda.CataclysmDDA.experimental.desktop
+similarity index 72%
+rename from data/xdg/org.cataclysmdda.CataclysmDDA.desktop
+rename to data/xdg/org.cataclysmdda.CataclysmDDA.experimental.desktop
+index c82a555..473c8b4 100644
+--- a/data/xdg/org.cataclysmdda.CataclysmDDA.desktop
++++ b/data/xdg/org.cataclysmdda.CataclysmDDA.experimental.desktop
+@@ -1,8 +1,8 @@
+ [Desktop Entry]
+-Name=Cataclysm: Dark Days Ahead
++Name=Cataclysm: Dark Days Ahead (Experimental)
+ GenericName=Post-apocalyptic survival game
+ Comment=A turn-based survival game set in a post-apocalyptic world.
+-Icon=org.cataclysmdda.CataclysmDDA
++Icon=org.cataclysmdda.CataclysmDDA.experimental
+ Type=Application
+ Exec=cataclysm-tiles
+ Categories=Game;RolePlaying;
+diff --git a/data/xdg/org.cataclysmdda.CataclysmDDA.svg b/data/xdg/org.cataclysmdda.CataclysmDDA.experimental.svg
+similarity index 100%
+rename from data/xdg/org.cataclysmdda.CataclysmDDA.svg
+rename to data/xdg/org.cataclysmdda.CataclysmDDA.experimental.svg
+-- 
+2.49.0
+
