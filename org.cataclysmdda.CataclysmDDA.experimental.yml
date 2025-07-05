@@ -24,7 +24,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/CleverRaven/Cataclysm-DDA.git
-        commit: "11c588f13495c4f94cf4d35f64da10de5783b028"
+        commit: "ac7da1e38c335400d86188479c414cb141328aed"
       - type: patch
         paths:
           - patches/0001-f-disable-warnings.patch
